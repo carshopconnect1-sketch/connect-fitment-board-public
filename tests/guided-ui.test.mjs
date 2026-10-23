@@ -1,0 +1,13 @@
+import test,{before,after} from 'node:test';
+import assert from 'node:assert/strict';
+import React from 'react';import {renderToStaticMarkup} from 'react-dom/server';
+import {createServer} from 'vite';import {newProject} from '../src/sample-data.mjs';
+let server,GuidedTaskDialog,Detail,WorkActionDesk;
+before(async()=>{server=await createServer({configFile:false,optimizeDeps:{noDiscovery:true,include:[]},server:{middlewareMode:true,hmr:false,watch:null}});({GuidedTaskDialog}=await server.ssrLoadModule('/src/GuidedTaskDialog.jsx'));({Detail}=await server.ssrLoadModule('/src/components.jsx'));({WorkActionDesk}=await server.ssrLoadModule('/src/WorkActionDesk.jsx'));});
+after(async()=>server?.close());
+const make=()=>newProject({flowVersion:2,car:'操作確認',registrationType:'new',developmentMethod:'own',owner:'A',due:'2026-10-20',salesChannels:['main']},'GUIDED');
+const render=(Component,props)=>renderToStaticMarkup(React.createElement(Component,props));
+test('blocked work explains its prerequisites and cannot be marked complete',()=>{const p=make(),html=render(GuidedTaskDialog,{project:p,task:p.tasks.find(t=>t.id==='csv-test'),actor:'A',members:[]});assert.match(html,/CSVコード変換マスターに登録が未完了/);assert.match(html,/先に CSVコード変換マスターに登録 を確認/);assert.match(html,/<button class="primary" disabled="">完了内容を確認/);});
+test('another employee can read the guided task but cannot save or complete it',()=>{const p=make(),html=render(GuidedTaskDialog,{project:p,task:p.tasks[0],actor:'B',members:[],canEdit:false});assert.match(html,/担当者・案件責任者・管理者が更新/);assert.match(html,/<fieldset disabled=""/);assert.match(html,/<button class="secondary" disabled="">作業内容を保存/);});
+test('historical sample cases use the same seven visible steps as the private version',()=>{const p=make();p.flowVersion=1;const html=render(Detail,{project:p,tab:'tasks',actor:'A'});assert.equal((html.match(/class="work-step /g)||[]).length,7);assert.doesNotMatch(html,/>作業リスト</);assert.match(html,/対象仕様を入力/);});
+test('employee landing action counts do not mix future prerequisites into ready work',()=>{const html=render(WorkActionDesk,{projects:[make()],actor:'A',compact:true});assert.match(html,/今すぐ対応/);assert.match(html,/前工程・確認待ち/);assert.match(html,/対象仕様・登録区分の確定/);assert.doesNotMatch(html,/<strong>注文書CSVの変換結果を確認<\/strong>/);});

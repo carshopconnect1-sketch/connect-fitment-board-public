@@ -1,0 +1,28 @@
+.registration-choice,.channel-choice{border:1px solid #dce4ef;border-radius:12px;padding:14px;margin:0;min-width:0}
+.registration-choice legend,.channel-choice legend{font-weight:700;padding:0 6px}
+.registration-choice{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.registration-choice>label{display:flex;align-items:flex-start;gap:8px;border:1px solid #dbe3ee;border-radius:9px;padding:12px;cursor:pointer;background:white}
+.registration-choice>label.selected{background:#edf5ff;border-color:#1878ec;box-shadow:0 0 0 1px #1878ec}
+.registration-choice input,.check-line input{width:17px;height:17px;min-height:17px;padding:0;margin:3px 0 0;flex-shrink:0;accent-color:#1372ed}
+.registration-choice small,.check-line small{display:block;font-size:12px;color:#728198;margin-top:5px;line-height:1.6}
+.check-line{display:flex!important;align-items:flex-start;gap:9px;cursor:pointer}
+.channel-choice{display:grid;gap:12px}.channel-choice>div{min-width:0}
+.case-summary{background:#f0f5fc;border:1px solid #dce7f6;border-radius:11px;padding:12px;margin:0 0 15px;font-size:12px}
+.case-summary>div{display:flex;justify-content:space-between;align-items:center;gap:6px}.case-summary p{margin:7px 0 0;color:#526780;line-height:1.6}
+.case-summary .hp-done{color:#168157}.case-summary .hp-pending{color:#9b6213}
+.handover-shortcut{display:block;width:100%;margin-top:9px;padding:9px;background:#fff6dc;border:1px solid #f2cf71;border-radius:7px;color:#815500;font-weight:700;text-align:left;cursor:pointer}
+.handover-card{border:1px solid #dce5ef;border-radius:10px;padding:13px;margin-top:12px;font-size:12px;background:white;overflow-wrap:anywhere}
+.handover-card.pending{border-color:#edc76e;background:#fffaf0}.handover-card.accepted{border-color:#a5d6bf;background:#f1fcf6}
+.handover-card.returned{border-color:#eab0b0;background:#fff6f6}.handover-state{float:right;font-weight:700;color:#835911}
+.handover-card p{line-height:1.7;margin:7px 0}.handover-card small{color:#788a9f}
+.handover-actions{display:flex;flex-direction:column;gap:9px;margin-top:11px}.handover-actions label{display:grid;gap:4px}.handover-actions input{width:100%;min-width:0;padding:9px;border:1px solid #ccd8e7;border-radius:7px}
+.empty-handover{font-size:13px;color:#71829a}.flow-section{margin-top:23px}.flow-section ol{padding:0;list-style:none}
+.flow-section li{border-left:3px solid #e1e8f1;padding:9px 12px;margin-top:8px;background:#f7f9fc;border-radius:0 7px 7px 0;font-size:12px}.flow-section li.current{border-color:#1777e9;background:#edf5ff}
+.flow-section p{line-height:1.7;margin:5px 0}.flow-section small{color:#6e8299}.release-definition{border:1px solid #b6d3f8;border-radius:10px;background:#eef6ff;padding:13px;font-size:12px}
+.actor-select{display:flex;align-items:center;gap:7px;font-size:11px;color:#637890}.actor-select select{border:1px solid #ccd9e9;border-radius:7px;background:white;padding:6px;color:#174274;max-width:105px}
+.registration-chip{font-size:10px;display:inline-block;color:#3b668c;background:#eaf1fa;border-radius:5px;padding:3px 6px;margin-top:5px}
+.task-handover-tag{color:#ad7514;font-size:10px;margin-left:5px}.task-row-block .task-name small{overflow-wrap:anywhere}
+.publication-check{border:1px solid #d9e3ef;border-radius:10px;padding:13px;display:grid;gap:10px}.publication-check h3{margin:0;font-size:15px}
+.topic-item.handover,.topic-item.unassigned{border-left-color:#dfaa42}.handover .topic-label,.unassigned .topic-label{color:#936500}
+.actor-select{white-space:nowrap}.actor-select span{max-width:155px;white-space:normal}
+@media(max-width:840px){.actor-select span{display:none}.topbar>div{gap:7px}.topbar time{display:none}.detail-tabs button{font-size:12px;padding-inline:5px}.registration-choice{grid-template-columns:1fr}.case-summary>div{align-items:flex-start}.case-summary .text-button{white-space:nowrap}.filter-row{flex-wrap:wrap}.quick-filters{flex-wrap:wrap}.quick-filters button{padding:8px 10px}.task-edit-row{grid-template-columns:minmax(0,1fr) 95px!important;gap:9px}.task-edit-row>span{grid-column:1/-1}.task-edit-row label{min-width:0}}

@@ -1,0 +1,11 @@
+import test,{before,after} from 'node:test';import assert from 'node:assert/strict';import React from 'react';import {renderToStaticMarkup} from 'react-dom/server';import {createServer} from 'vite';
+let server,Board,CaseEntryForm,AppNavigation,Overview;
+before(async()=>{server=await createServer({configFile:false,optimizeDeps:{noDiscovery:true,include:[]},server:{middlewareMode:true,hmr:false,watch:null}});({Board,Overview}=await server.ssrLoadModule('/src/components.jsx'));({CaseEntryForm}=await server.ssrLoadModule('/src/CaseEntryForm.jsx'));({AppNavigation}=await server.ssrLoadModule('/src/AppNavigation.jsx'));});after(async()=>server?.close());
+const render=(c,p)=>renderToStaticMarkup(React.createElement(c,p));
+test('ボードの上から7工程へ直接移動できる',()=>{const html=render(Board,{projects:[]});assert.match(html,/aria-label="工程へ移動"/);assert.match(html,/aria-label="前の工程へ"/);assert.match(html,/aria-label="次の工程へ"/);assert.equal((html.match(/data-stage-link=/g)||[]).length,7);assert.match(html,/ボードを広く表示/);});
+test('登録フォームは現在のステップと次の入力を表示し、最初から保存できない',()=>{const html=render(CaseEntryForm,{onSave:()=>{}});assert.match(html,/aria-current="step"/);assert.match(html,/次へ：型取り・担当/);assert.doesNotMatch(html,/この内容で案件を登録|旧工程と今の状況/);assert.match(html,/メーカー/);assert.match(html,/車種/);});
+test('共通メニューから登録・品番登録・開発・適合・承認へ進める',()=>{const html=render(AppNavigation,{connected:true,onRegister:()=>{},onSelect:()=>{}});for(const title of ['案件登録','品番の台帳・発行','購入・発送','開発・試作','品質・適合確認','品番登録・販売準備','販売開始の承認'])assert.ok(html.includes(title),title);});
+test('承認画面には未依頼・販売開始済み案件を混ぜない',()=>{const html=render(Overview,{view:'approval',projects:[{id:'A',car:'承認待ち',manufacturer:'トヨタ',launch:{status:'approval-pending'},tasks:[],fitment:{}},{id:'B',car:'販売済み',manufacturer:'トヨタ',launch:{status:'confirmed'},tasks:[],fitment:{}}]});assert.match(html,/承認待ち/);assert.doesNotMatch(html,/販売済み/);});
+
+import {BOARD_PHASES} from '../src/board-phases.mjs';import {BOARD_STAGES} from '../src/workflow.mjs';
+test('メニューとボードの7工程は同じ定義・同じ順序を使う',async()=>{const {NAV_GROUPS}=await server.ssrLoadModule('/src/AppNavigation.jsx');const group=NAV_GROUPS.find(g=>g.label==='登録から販売まで');assert.deepEqual(group.items.map(i=>i.label),BOARD_STAGES);assert.deepEqual(group.items.map(i=>i.id),BOARD_PHASES.map(i=>i.id));});

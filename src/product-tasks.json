@@ -1,0 +1,17 @@
+[
+ {"id":"product-plan","stage":0,"group":"intake","name":"商品仕様を決める","proof":"商品名・用途・サイズ・色・素材・セット内容と注意事項を記録"},
+ {"id":"product-check","stage":0,"group":"candidate","name":"既存商品との重複・違いを確認","proof":"既存商品・品番を確認し、今回追加する理由を記録","requires":["product-plan"]},
+ {"id":"product-intake","stage":0,"group":"intake","name":"担当・期限と開発方針を確認","proof":"責任者・担当・期限と、開発または仕入れの方針を確認","requires":["product-check"]},
+ {"id":"product-source","stage":1,"group":"arrange","name":"仕入先・工場と現物を手配","proof":"仕入先・工場窓口・見積・数量・納期と現物を確認","requires":["product-intake"]},
+ {"id":"china-send","stage":1,"group":"china","name":"中国へ発送・送り状番号を登録","proof":"発送台帳の荷物を案件へ対応付ける","when":"china","requires":["product-source"]},
+ {"id":"factory-receive","stage":1,"group":"china","name":"中国工場の受取・内容確認","proof":"配達完了と工場の内容確認を台帳で確認","when":"china","requires":["china-send"]},
+ {"id":"product-sample","stage":2,"group":"development","name":"サンプル・試作品を確認","proof":"試作の版・写真・変更点を記録。修正があれば工場へ戻し、結果を確認","when":"own","requires":["product-source","factory-receive"]},
+ {"id":"product-quality","stage":3,"group":"fitment","name":"品質・使用条件を確認","proof":"寸法・縫製・素材・取付や使用時の注意・梱包を確認し、写真や結果を残す","requires":["product-source","factory-receive","product-sample"]},
+ {"id":"product-sku","stage":4,"group":"master","name":"販売品番とバリエーションを登録","proof":"商品設定に正式な販売品番を入力し、色・サイズ・セットの対応を確認","requires":["product-quality"]},
+ {"id":"product-stock","stage":4,"group":"orders","name":"価格・在庫・納期を確認","proof":"販売価格・初回入荷数量・在庫または取寄せ条件と納期を確認","requires":["product-sku"]},
+ {"id":"product-hp","stage":4,"group":"hp","name":"HPの商品掲載・カテゴリを確認","proof":"新規または既存カテゴリから商品へ辿れることを確認し、公開URLを記録","requires":["product-sku"]},
+ {"id":"main","stage":4,"group":"pages","name":"本店の商品ページ","proof":"商品名・品番・画像・価格・サイズ・色・注意事項と公開URLを確認","requires":["product-quality","product-sku"]},
+ {"id":"rakuten","stage":4,"group":"pages","name":"楽天の商品ページ","proof":"商品名・品番・画像・価格・サイズ・色・注意事項と公開URLを確認","requires":["product-quality","product-sku"]},
+ {"id":"yahoo","stage":4,"group":"pages","name":"Yahooの商品ページ","proof":"商品名・品番・画像・価格・サイズ・色・注意事項と公開URLを確認","requires":["product-quality","product-sku"]},
+ {"id":"product-order","stage":4,"group":"orders","name":"受注・注文書・CSVの動作を確認","proof":"必要な受注設定・商品コード・注文書・CSVの変換を確認。使わない項目は理由を記録","requires":["product-stock"]}
+]

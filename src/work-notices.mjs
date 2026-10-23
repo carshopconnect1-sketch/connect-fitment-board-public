@@ -1,0 +1,7 @@
+const ACTIONS={handover:['引継ぎの受領','引き継ぐ内容と期限を確認して受領してください','handover'],launch_requested:['販売開始の承認依頼','公開状態と注文できることを確認して承認してください','approval'],request_launch:['販売開始の承認依頼','公開状態と注文できることを確認して承認してください','approval'],launch_review:['再承認が必要','変更内容を確認して承認を依頼し直してください','approval'],reject_launch:['販売承認の差し戻し','指摘内容を修正して再申請してください','approval'],deadline:['期限を過ぎています','担当作業の状況と期限を確認してください','tasks'],overdue:['期限を過ぎています','担当作業の状況と期限を確認してください','tasks'],return:['引継ぎが差し戻されました','差し戻し理由を確認して担当を調整してください','handover']};
+export function noticePresentation(n){const action=ACTIONS[n.kind];const sold=n.kind==='launch_approved';return {category:action?'action':sold?'sales':'updates',label:action?.[0]||(sold?'販売開始':'更新履歴'),next:action?.[1]||(sold?'フロント向けに公開商品と適合を確認できます':n.nextTask?`次の作業：${n.nextTask}`:'変更内容は案件の履歴で確認できます'),route:action?.[2]||(sold?'approval':n.kind==='fitment_reflection'||n.kind==='fitment'?'fitment':'history'),button:action?.[2]==='handover'?'引継ぎを確認 →':action?.[2]==='approval'?'承認画面を開く →':sold?'販売情報を見る →':action?'作業を確認 →':'変更内容を見る →'};}
+export function groupNotices(notices,filter='action'){
+ const rows=[...notices].sort((a,b)=>b.at.localeCompare(a.at));const groups=new Map();
+ for(const n of rows){const meta=noticePresentation(n);if(filter==='unread'&&n.read||!['all','unread'].includes(filter)&&meta.category!==filter)continue;const key=meta.category==='updates'?`${n.caseId}:updates`:n.id;if(!groups.has(key))groups.set(key,{...n,meta,events:[],read:true});const g=groups.get(key);g.events.push(n);g.read=g.read&&n.read;}
+ return [...groups.values()];
+}

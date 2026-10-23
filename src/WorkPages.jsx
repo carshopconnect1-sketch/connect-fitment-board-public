@@ -1,0 +1,15 @@
+import React,{useState} from 'react';
+import {groupNotices,noticePresentation} from './work-notices.mjs';
+import {WorkActionDesk} from './WorkActionDesk.jsx';
+import {topicDateTime} from './topics.mjs';
+import {currentDate} from './workflow.mjs';
+import './work-pages.css';
+export const LAUNCH_STATES={'pending':'準備中','approval-pending':'最終承認待ち','confirmed':'販売開始 承認済み','needs-review':'再承認が必要','returned':'承認差し戻し'};
+export function WorkInbox({notices,onOpen,onRead,onMore,projects=[],actor,admin=false,role, members=[],query}) {
+ const [filter,setFilter]=useState('action');const groups=groupNotices(notices,filter);const [busy,setBusy]=useState('');const [error,setError]=useState('');
+ const filters=[['action','依頼・確認の通知'],['sales','販売開始'],['updates','更新履歴'],['unread','未確認'],['all','すべて']];
+ const readGroup=async g=>{setBusy(g.id);setError('');try{for(const n of g.events)if(!n.read)await onRead(n.id);}catch(e){setError(e.message);}finally{setBusy('');}};
+ return <><WorkActionDesk projects={projects} actor={actor} admin={admin} role={role} members={members} query={query} onOpen={onOpen} compact/><section className="work-list overview-scroll work-inbox" aria-label="お知らせ一覧"><div className="inbox-filters">{filters.map(([k,label])=><button key={k} className={filter===k?'primary compact':'secondary compact'} aria-pressed={filter===k} onClick={()=>setFilter(k)}>{label}<b>{groupNotices(notices,k).length}</b></button>)}</div><p className="work-help">先に受領・承認・期限などの対応を確認します。同じ案件の通常更新はまとめています。</p>{error&&<p role="alert">{error}</p>}{!groups.length&&<div className="work-empty">{filter==='action'?'対応が必要なお知らせはありません。販売開始や通常の変更は上の切替から確認できます。':'この区分のお知らせはありません。'}</div>}{groups.map(g=><article className={`work-notice ${g.read?'read':'unread'} notice-${g.meta.category}`} key={g.id}><div className="notice-main"><div className="notice-head"><span className="notice-category">{g.meta.label}</span>{!g.read&&<span className="notice-unread">● 未確認</span>}<time>{topicDateTime(g.at)}</time></div><h3>{g.car||'車種未登録'} <span>{g.sku||'品番未登録'}</span></h3><p className="notice-action-text">{g.meta.next}</p><p className="notice-change">{g.text}{g.events.length>1&&` ほか${g.events.length-1}件`}</p>{g.actorLabel&&<small>更新者 {g.actorLabel}</small>}{g.events.length>1&&<details><summary>更新の内訳 {g.events.length}件</summary>{g.events.map(n=><p key={n.id}><time>{topicDateTime(n.at)}</time> · {n.text}</p>)}</details>}</div><div className="work-row-actions"><button className="primary compact" onClick={()=>onOpen(g.caseId,g.meta.route)}>{g.meta.button}</button><button className="secondary compact" disabled={g.read||busy===g.id} onClick={()=>readGroup(g)}>{busy===g.id?'保存中…':g.read?'確認済み':'確認済みにする'}</button></div></article>)}{onMore&&<button className="secondary" onClick={onMore}>以前のお知らせを表示</button>}</section></>;
+}
+export function MyWork(props) {return <WorkActionDesk {...props}/>;}
+export function NoticeStrip({unread,onOpen}) {return unread>0?<button className="work-notice-strip" onClick={onOpen}><span className="work-dot"/><strong>未読の更新・販売開始 {unread}件</strong><span>確認する →</span></button>:null;}

@@ -1,0 +1,10 @@
+import test,{before,after} from 'node:test';
+import assert from 'node:assert/strict';
+import React from 'react';import {renderToStaticMarkup} from 'react-dom/server';import {createServer} from 'vite';
+let server,Form,Choice,Scope;
+before(async()=>{server=await createServer({configFile:false,optimizeDeps:{noDiscovery:true,include:[]},server:{middlewareMode:true,hmr:false,watch:null}});({CaseEntryForm:Form}=await server.ssrLoadModule('/src/CaseEntryForm.jsx'));({ProductKindChoice:Choice,ProductScope:Scope}=await server.ssrLoadModule('/src/ProductFields.jsx'));});
+after(async()=>server?.close());
+const render=(c,p)=>renderToStaticMarkup(React.createElement(c,p));
+test('シートカバー登録では他商品の選択肢を混在させない',()=>{const html=render(Form,{initialValues:{productKind:'seat'}});assert.match(html,/メーカー/);assert.match(html,/新規車種登録/);assert.doesNotMatch(html,/value="neck"|value="steering"/);});
+test('その他商品の登録では車種とメーカーの入力を要求しない',()=>{const html=render(Form,{initialValues:{productKind:'neck'}});assert.match(html,/商品名/);assert.match(html,/商品仕様・バリエーション/);assert.match(html,/次へ：開発方法・担当/);assert.doesNotMatch(html,/data-entry-field="manufacturer"|data-entry-field="registrationType"/);assert.doesNotMatch(render(Choice,{draft:{productKind:'neck'},set:()=>{}}),/value="seat"/);});
+test('管理対象はシートカバーを初期選択し、元シートの範囲を明示する',()=>{const html=render(Scope,{onChange:()=>{}});assert.match(html,/aria-pressed="true"[^>]*>シートカバー/);assert.match(html,/現在の管理シートの対象/);assert.match(html,/その他の商品/);});

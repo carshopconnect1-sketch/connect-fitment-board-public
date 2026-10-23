@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.preview/
+.sites-runtime/
+outputs/
+.env
+.env.*

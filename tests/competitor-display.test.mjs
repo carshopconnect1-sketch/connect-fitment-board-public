@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {competitorDisplay} from '../src/competitor-display.mjs';
+test('英語・日本語メーカーと見出し内の重複品番を統一する',()=>{assert.deepEqual(competitorDisplay({title:'シートカバー追加車種：EZ-7070 MAZDA：CX-5',codes:['EZ-7070']}),{manufacturer:'マツダ',car:'CX-5'});assert.deepEqual(competitorDisplay({title:'シートカバー追加車種：ET-1667 トヨタ：アルファード ハイブリッド 7人乗Gグレード',codes:['ET-1667']}),{manufacturer:'トヨタ',car:'アルファード ハイブリッド 7人乗Gグレード'});});
+test('メーカーの記載がない場合は推測せず元の車種・仕様を保つ',()=>{assert.deepEqual(competitorDisplay({title:'シートカバー追加車種：エブリイ ワゴン/エブリイ',codes:['ES-6083']}),{manufacturer:'',car:'エブリイ ワゴン / エブリイ'});});

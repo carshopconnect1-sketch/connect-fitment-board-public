@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {stageOf,boardStageOf,healthOf} from '../src/workflow.mjs';
+import {workQueue} from '../src/work-actions.mjs';
+import {sortSheetCases,statusCounts,primaryCases} from '../src/sheet-status.mjs';
+test('sales sort by explicit full dates while dates without a year stay unconfirmed',()=>{const rows=[{id:'old',sheetStatus:{launchDate:'2025/12/01'}},{id:'unknown',sheetStatus:{launchDate:'4/17'}},{id:'new',sheetStatus:{launchDate:'2026/10/09'}}];assert.deepEqual(sortSheetCases(rows,'sold').map(p=>p.id),['new','old','unknown']);assert.equal(rows[0].id,'old');});
+test('counts group purchase copies only when their parent is present',()=>{const a=p();const child={...p(),id:'purchase',sheetStatus:{...p().sheetStatus,relatedTo:a.id}};assert.deepEqual(statusCounts([a,child]),{active:0,sold:1,review:0});assert.equal(primaryCases([child]).length,1);});
+const p=()=>({id:'real',car:'実車',owner:'',launch:{status:'pending'},tasks:[{id:'plan',name:'仕様',stage:0,required:true,status:'todo',owner:''}],afterLaunchTasks:[],sheetStatus:{category:'sold',stage:6,launchDate:'2026-10-09',issues:[],source:{serial:'R-263'}}});
+test('historical sales display as sold without fabricating task completion or approval',()=>{const x=p();assert.equal(stageOf(x),5);assert.equal(boardStageOf(x),6);assert.equal(x.tasks[0].status,'todo');assert.equal(x.launch.status,'pending');assert.equal(healthOf(x).label,'販売済み');});
+test('source stage positions an active case without completing its prerequisite tasks',()=>{const x=p();x.sheetStatus={...x.sheetStatus,category:'active',stage:3};assert.equal(boardStageOf(x),3);assert.equal(x.tasks[0].status,'todo');});
+test('historical sales and related purchase copies do not generate employee task assignments',()=>{assert.equal(Object.values(workQueue([p()],'admin',{admin:true})).flat().length,0);const x=p();x.sheetStatus={...x.sheetStatus,category:'active',relatedTo:'other'};assert.equal(Object.values(workQueue([x],'admin',{admin:true})).flat().length,0);});

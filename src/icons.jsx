@@ -1,0 +1,19 @@
+export { KanbanIcon } from '@phosphor-icons/react/dist/csr/Kanban';
+export { CarProfileIcon } from '@phosphor-icons/react/dist/csr/CarProfile';
+export { ClipboardTextIcon } from '@phosphor-icons/react/dist/csr/ClipboardText';
+export { MagnifyingGlassIcon } from '@phosphor-icons/react/dist/csr/MagnifyingGlass';
+export { PlusIcon } from '@phosphor-icons/react/dist/csr/Plus';
+export { BellIcon } from '@phosphor-icons/react/dist/csr/Bell';
+export { XIcon } from '@phosphor-icons/react/dist/csr/X';
+export { CheckIcon } from '@phosphor-icons/react/dist/csr/Check';
+export { CircleIcon } from '@phosphor-icons/react/dist/csr/Circle';
+export { CheckCircleIcon } from '@phosphor-icons/react/dist/csr/CheckCircle';
+export { DotsThreeIcon } from '@phosphor-icons/react/dist/csr/DotsThree';
+export { ArrowRightIcon } from '@phosphor-icons/react/dist/csr/ArrowRight';
+export { ArrowSquareOutIcon } from '@phosphor-icons/react/dist/csr/ArrowSquareOut';
+export { FunnelIcon } from '@phosphor-icons/react/dist/csr/Funnel';
+export { ListIcon } from '@phosphor-icons/react/dist/csr/List';
+export { PencilSimpleIcon } from '@phosphor-icons/react/dist/csr/PencilSimple';
+export { CaretDownIcon } from '@phosphor-icons/react/dist/csr/CaretDown';
+
+export { TruckIcon } from '@phosphor-icons/react/dist/csr/Truck';

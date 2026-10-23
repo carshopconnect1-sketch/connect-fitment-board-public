@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {entryIssues,entryTransition,entrySummary} from '../src/entry-form.mjs';
+const good=()=>({manufacturer:'ホンダ',car:'Super-ONE',registrationType:'new',developmentMethod:'own',owner:'',reviewer:'',salesChannels:['main','rakuten','yahoo']});
+test('初回は車種と登録区分だけ検証し、未定の担当を許容する',()=>{assert.deepEqual(entryIssues(good(),0),{});assert.deepEqual(Object.keys(entryIssues({},0)),['manufacturer','car','registrationType']);assert.deepEqual(entryIssues(good(),1),{});});
+test('空白・追加先未選択・型取り未選択を通さない',()=>{assert.ok(entryIssues({...good(),car:'  '},0).car);assert.ok(entryIssues({...good(),registrationType:'existing'},0).baseVehicleId);assert.ok(entryIssues({...good(),developmentMethod:''},1).developmentMethod);});
+test('次へやEnterは確認画面まで保存しない',()=>{assert.deepEqual(entryTransition(0,good()),{step:1,commit:false,issues:{}});assert.deepEqual(entryTransition(1,good()),{step:2,commit:false,issues:{}});assert.deepEqual(entryTransition(2,good()),{step:2,commit:true,issues:{}});});
+test('確認画面でも全項目を再検証し、該当する入力画面へ戻す',()=>{const result=entryTransition(2,{...good(),car:''});assert.equal(result.commit,false);assert.equal(result.step,0);assert.ok(result.issues.car);});
+test('旧案件の確認は照合チェックと残作業メモの両方が必要',()=>{assert.ok(entryIssues(good(),2,{review:true}).reviewed);assert.ok(entryIssues({...good(),reviewed:true,reviewNote:'  '},2,{review:true}).reviewNote);assert.deepEqual(entryIssues({...good(),reviewed:true,reviewNote:'試作品確認が残っています'},2,{review:true}),{});});
+test('販売先を対象外にした場合は理由が必要',()=>{assert.ok(entryIssues({...good(),salesChannels:['main']},1,{exclusions:true}).channelExclusions);assert.deepEqual(entryIssues({...good(),salesChannels:['main'],channelExclusions:{rakuten:'対象外',yahoo:'対象外'}},1,{exclusions:true}),{});});
+test('認証情報を含むURLを拒否し、担当未定の対応先と最初の作業を表示',()=>{assert.ok(entryIssues({...good(),categoryUrl:'https://user:pass@example.com'},0).categoryUrl);const summary=entrySummary(good(),()=> '');assert.ok(summary.some(([key,value])=>key==='案件責任者'&&value.includes('管理者が設定')));assert.ok(summary.some(([key,value])=>key==='最初にすること'&&value.includes('責任者')));assert.ok(summary.some(([key,value])=>key==='HPで必要な作業'&&value.includes('HPカテゴリーページ')));});

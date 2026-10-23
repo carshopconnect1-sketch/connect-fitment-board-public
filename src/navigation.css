@@ -1,0 +1,23 @@
+:root{--sidebar:240px}
+.sidebar{min-height:0;padding:17px 10px 10px;gap:0}
+.sidebar .brand-mark{flex-shrink:0;margin-bottom:14px}
+.sidebar nav.app-navigation{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;gap:20px;padding:0 2px 12px;scrollbar-width:thin;scrollbar-color:#476185 transparent}
+.nav-group{flex-shrink:0}
+.sidebar .nav-group-label{margin:0 12px 7px;font-size:11px;font-weight:500;color:#a7bbd5;line-height:1.6;letter-spacing:.06em}
+.nav-group-items{display:flex;flex-direction:column;gap:4px}
+.sidebar nav.app-navigation button{width:100%;min-height:60px;padding:10px 12px;gap:11px;border-radius:9px;font-weight:500;position:relative}
+.sidebar nav.app-navigation button>svg{width:23px;flex-shrink:0;color:#b8cee9}
+.sidebar nav.app-navigation button .nav-copy{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}
+.nav-label{font-size:15px;font-weight:700;line-height:1.5;white-space:nowrap}
+.nav-description{font-size:10px;font-weight:400;line-height:1.6;color:#a7bbd5;white-space:nowrap}
+.sidebar nav.app-navigation button .nav-arrow{width:14px;flex-shrink:0;color:#7392b9}
+.sidebar nav.app-navigation button.active{background:#146ce4;border-color:#5a9cff}
+.sidebar nav.app-navigation button.active .nav-description{color:#e0ecff}
+.sidebar nav.app-navigation button.active>svg{color:#fff}
+.sidebar nav.app-navigation button:focus-visible{outline:2px solid #8cbfff;outline-offset:-2px}
+.nav-unread{flex-shrink:0;min-width:21px;padding:2px 5px;border-radius:12px;background:#36d779;color:#092c1b;font-size:10px;font-weight:700;line-height:1.5;text-align:center}
+.nav-step{display:flex;align-items:center;justify-content:center;flex:none;width:23px;height:23px;border:1px solid #6687b0;border-radius:50%;color:#d8e7fb;font-size:13px;font-weight:700}
+.sidebar nav.app-navigation button.active .nav-step{border-color:#dceaff;color:#fff;background:#ffffff18}
+.sidebar-bottom{flex-shrink:0;margin-top:0;padding:10px 12px 2px;border-top:1px solid #29415f;font-size:10px;color:#9ab0cd}
+@media(max-width:900px){.sidebar{width:min(280px,calc(100vw - 56px))}.sidebar nav.app-navigation button{min-height:62px}.nav-label{font-size:16px}.nav-description{font-size:11px}}
+@media(max-height:700px){.sidebar .brand-mark{height:50px;margin-bottom:10px}.sidebar nav.app-navigation{gap:14px}.sidebar nav.app-navigation button{min-height:56px;padding-top:8px;padding-bottom:8px}}
